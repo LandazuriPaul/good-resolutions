@@ -1,30 +1,19 @@
 package server
 
 import (
-	"log"
+	"github.com/gin-gonic/gin"
 
 	"github.com/LandazuriPaul/good-resolutions/api/internal/handlers"
+	"github.com/LandazuriPaul/good-resolutions/api/internal/orm"
+	"github.com/LandazuriPaul/good-resolutions/api/pkg/logger"
 	"github.com/LandazuriPaul/good-resolutions/api/pkg/utils"
-	"github.com/gin-gonic/gin"
 )
 
-var host, port, gqlPath, gqlPgPath string
-var isPgEnabled bool
-
-func init() {
-	host = utils.MustGetString("GOOD_RESOLUTIONS_API_HOST")
-	port = utils.MustGetString("GOOD_RESOLUTIONS_API_PORT")
-	gqlPath = utils.MustGetString("GOOD_RESOLUTIONS_API_GRAPHQL_PATH")
-	gqlPgPath = utils.MustGetString("GOOD_RESOLUTIONS_API_GRAPHQL_PLAYGROUND_PATH")
-	isPgEnabled = utils.MustGetBool("GOOD_RESOLUTIONS_API_GRAPHQL_PLAYGROUND_ENABLED")
-}
-
 // Run spins up the server
-func Run() {
+func Run(config *utils.ServerConfig, orm *orm.ORM) {
 	endpoint := "http://" + host + ":" + port
 
 	r := gin.Default()
-
 	// Handlers
 	// Simple keep-alive/ping handler
 	r.GET("/ping", handlers.Ping())
@@ -33,14 +22,15 @@ func Run() {
 	// Playground handler
 	if isPgEnabled {
 		r.GET(gqlPgPath, handlers.PlaygroundHandler(gqlPath))
-		log.Println("GraphQL Playground @ " + endpoint + gqlPgPath)
+		logger.Info("GraphQL Playground @ " + endpoint + gqlPgPath)
 	}
-	r.POST(gqlPath, handlers.GraphqlHandler())
-	log.Println("GraphQL @ " + endpoint + gqlPath)
+	// Pass in the ORM instance to the GraphqlHandler
+	r.POST(gqlPath, handlers.GraphqlHandler(orm))
+	logger.Info("GraphQL @ " + endpoint + gqlPath)
 
 	// Run the server
 	// Inform the user where the server is listening
-	log.Println("Running @ " + endpoint)
+	logger.Info("Running @ " + endpoint)
 	// Print out and exit(1) to the OS if the server cannot run
-	log.Fatalln(r.Run(host + ":" + port))
+	logger.Fatal(r.Run(host + ":" + port))
 }

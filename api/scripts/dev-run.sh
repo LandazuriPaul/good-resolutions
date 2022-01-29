@@ -4,6 +4,8 @@ pkgFile="main.go"
 app="good-resolutions-api"
 src="$srcPath/$app/$pkgFile"
 
+echo "Live reload server launched (with realize)..."
+
 if [ "$1" == "" ]; then
   mode="development"
   printf "\nNo mode given"
@@ -20,7 +22,7 @@ fi
 
 printf "\nStart running: $app\n"
 # Set all ENV vars for the server to run
-export $(grep -v '^#' $mode.env | xargs) && time go run $src
+export $(grep -v '^#' $mode.env | xargs) && time $GOPATH/bin/realize start --run $src
 # This should unset all the ENV vars, just in case.
 unset $(grep -v '^#' $mode.env | sed -E 's/(.*)=.*/\1/' | xargs)
 printf "\nStopped running: $app\n\n"

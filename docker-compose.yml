@@ -8,3 +8,21 @@ services:
       - GOOD_RESOLUTIONS_API_HOST=0.0.0.0
       - GOOD_RESOLUTIONS_API_GRAPHQL_PATH=/graphql
       - GOOD_RESOLUTIONS_API_GRAPHQL_PLAYGROUND_PATH=/
+
+  # DB
+  postgres:
+    image: postgres:11
+    environment:
+      - POSTGRES_PASSWORD=d0A8F#jz!F
+      - POSTGRES_USER=init_user
+    volumes:
+      # Files placed in the docker-entrypoint-initdb.d
+      # will be executed in alphabetical order
+      - ./database/postgres/credentials.sql:/docker-entrypoint-initdb.d/a.sql
+      - ./database/postgres/init.sql:/docker-entrypoint-initdb.d/b.sql
+      # If there is already a db, previous scripts will be skipped
+      # and the following database will be mounted instead
+      - postgresdata:/var/lib/postgresql/db
+
+volumes:
+  postgresdata:

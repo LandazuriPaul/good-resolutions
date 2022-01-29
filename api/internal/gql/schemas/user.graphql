@@ -1,0 +1,49 @@
+# Types
+type User implements IBase {
+  id: ID!
+  email: String!
+  userId: String
+  firstName: String
+  lastName: String
+  nickName: String
+  description: String
+  location: String
+  createdAt: Time!
+  updatedAt: Time
+}
+
+# Input Types
+input UserInput {
+  email: String
+  userId: String
+  firstName: String
+  lastName: String
+  nickName: String
+  description: String
+  location: String
+}
+
+input UpdateUserInput {
+  id: ID!
+  patch: UserInput!
+}
+
+input DeleteUserInput {
+  id: ID!
+}
+
+# List Types
+type Users {
+  count: Int
+  list: [User!]!
+}
+
+extend type Query {
+  users(filter: FilterInput): Users!
+}
+
+extend type Mutation {
+  createUser(input: UserInput!): User!
+  updateUser(input: UpdateUserInput!): User!
+  deleteUser(input: DeleteUserInput!): Boolean!
+}

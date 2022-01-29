@@ -2,13 +2,53 @@
 
 package models
 
-type User struct {
-	ID     string `json:"id"`
-	Email  string `json:"email"`
-	UserID string `json:"userId"`
+import (
+	"time"
+)
+
+type IBase interface {
+	IsIBase()
 }
 
+type DeleteUserInput struct {
+	ID string `json:"id"`
+}
+
+type FilterInput struct {
+	ID *string `json:"id"`
+}
+
+type UpdateUserInput struct {
+	ID    string     `json:"id"`
+	Patch *UserInput `json:"patch"`
+}
+
+type User struct {
+	ID          string     `json:"id"`
+	Email       string     `json:"email"`
+	UserID      *string    `json:"userId"`
+	FirstName   *string    `json:"firstName"`
+	LastName    *string    `json:"lastName"`
+	NickName    *string    `json:"nickName"`
+	Description *string    `json:"description"`
+	Location    *string    `json:"location"`
+	CreatedAt   time.Time  `json:"createdAt"`
+	UpdatedAt   *time.Time `json:"updatedAt"`
+}
+
+func (User) IsIBase() {}
+
 type UserInput struct {
-	Email  *string `json:"email"`
-	UserID *string `json:"userId"`
+	Email       *string `json:"email"`
+	UserID      *string `json:"userId"`
+	FirstName   *string `json:"firstName"`
+	LastName    *string `json:"lastName"`
+	NickName    *string `json:"nickName"`
+	Description *string `json:"description"`
+	Location    *string `json:"location"`
+}
+
+type Users struct {
+	Count *int    `json:"count"`
+	List  []*User `json:"list"`
 }

@@ -9,3 +9,7 @@ services:
       - GOOD_RESOLUTIONS_API_PORT=8080
       - GOOD_RESOLUTIONS_API_GRAPHQL_PLAYGROUND_ENABLED=true
     restart: unless-stopped
+
+  postgres:
+    ports:
+      - '5432:5432'

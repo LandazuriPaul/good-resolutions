@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"log"
+	log "github.com/LandazuriPaul/good-resolutions/api/pkg/logger"
 	"os"
 	"strconv"
 )
@@ -9,7 +9,8 @@ import (
 func mustGet(k string) string {
 	v := os.Getenv(k)
 	if v == "" {
-		log.Panicln("ENV missing, key: " + k)
+		log.MissingArg(k)
+		log.Panic("ENV missing, key: " + k)
 	}
 	return v
 }
@@ -24,7 +25,8 @@ func MustGetBool(k string) bool {
 	v := mustGet(k)
 	b, err := strconv.ParseBool(v)
 	if err != nil {
-		log.Panicln("ENV err: [" + k + "]\n" + err.Error())
+		log.MissingArg(k)
+		log.Panic("ENV err: [" + k + "]\n" + err.Error())
 	}
 	return b
 }
